@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Practice Tracker</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Authentication Content -->
+        <div id="authContent">
+            <div class="auth-container">
+                <div class="auth-tabs">
+                    <button class="auth-tab active" data-tab="login">Login</button>
+                    <button class="auth-tab" data-tab="register">Register</button>
+                </div>
+                
+                <!-- Login Form -->
+                <form id="loginForm" class="auth-form">
+                    <div class="form-group">
+                        <label for="loginEmail">Email:</label>
+                        <input type="email" id="loginEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="loginPassword">Password:</label>
+                        <input type="password" id="loginPassword" required>
+                    </div>
+                    <button type="submit" class="btn primary">Login</button>
+                </form>
+
+                <!-- Register Form -->
+                <form id="registerForm" class="auth-form" style="display: none;">
+                    <div class="form-group">
+                        <label for="registerUsername">Username:</label>
+                        <input type="text" id="registerUsername" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="registerEmail">Email:</label>
+                        <input type="email" id="registerEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="registerPassword">Password:</label>
+                        <input type="password" id="registerPassword" required>
+                    </div>
+                    <button type="submit" class="btn primary">Register</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div id="mainContent" style="display: none;">
+            <header>
+                <h1>Practice Tracker</h1>
+                <div class="user-controls">
+                    <span id="userInfo"></span>
+                    <button id="logoutBtn" class="btn secondary">Logout</button>
+                </div>
+                <nav>
+                    <button class="nav-btn active" data-section="timer">Timer</button>
+                    <button class="nav-btn" data-section="history">History</button>
+                    <button class="nav-btn" data-section="reports">Reports</button>
+                    <button class="nav-btn" data-section="settings">Settings</button>
+                </nav>
+            </header>
+
+            <main>
+                <!-- Timer Section -->
+                <section id="timer" class="section active">
+                    <div class="timer-container">
+                        <div class="timer-mode-selector">
+                            <button class="btn secondary active" data-mode="timer">Timer Mode</button>
+                            <button class="btn secondary" data-mode="manual">Manual Entry</button>
+                        </div>
+                        <div class="timer-display">
+                            <span id="minutes">00</span>:<span id="seconds">00</span>
+                        </div>
+                        <div class="timer-controls">
+                            <button id="startTimer" class="btn primary">Start</button>
+                            <button id="stopTimer" class="btn secondary">Stop</button>
+                            <button id="resetTimer" class="btn secondary">Reset</button>
+                        </div>
+                        <div class="manual-entry" style="display: none;">
+                            <div class="form-group">
+                                <label for="manualMinutes">Minutes:</label>
+                                <input type="number" id="manualMinutes" min="0" value="0">
+                            </div>
+                            <div class="form-group">
+                                <label for="manualSeconds">Seconds:</label>
+                                <input type="number" id="manualSeconds" min="0" max="59" value="0">
+                            </div>
+                            <button id="setManualTime" class="btn primary">Set Time</button>
+                        </div>
+                        <form id="practiceForm" class="practice-form">
+                            <div class="form-group">
+                                <label for="instrument">Instrument:</label>
+                                <select id="instrument" required>
+                                    <option value="">Select an instrument</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="category">Category:</label>
+                                <select id="category" required>
+                                    <option value="">Select a category</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="notes">Notes:</label>
+                                <textarea id="notes" rows="3" placeholder="Add any notes about your practice session..."></textarea>
+                            </div>
+                            <button type="submit" class="btn primary">Save Practice Session</button>
+                        </form>
+                    </div>
+                </section>
+
+                <!-- History Section -->
+                <section id="history" class="section">
+                    <div class="history-container">
+                        <div class="filters">
+                            <input type="date" id="dateFilter">
+                            <select id="instrumentFilter">
+                                <option value="">All Instruments</option>
+                            </select>
+                            <select id="categoryFilter">
+                                <option value="">All Categories</option>
+                            </select>
+                        </div>
+                        <div class="history-table-container">
+                            <table id="historyTable">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Duration</th>
+                                        <th>Instrument</th>
+                                        <th>Category</th>
+                                        <th>Notes</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="historyTableBody">
+                                    <!-- Practice sessions will be populated here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Reports Section -->
+                <section id="reports" class="section">
+                    <div class="reports-container">
+                        <div class="report-section">
+                            <h2>Total Practice Time</h2>
+                            <div id="totalPracticeTime" class="total-time">0h 0m 0s</div>
+                        </div>
+
+                        <div class="report-section">
+                            <h2>Practice Time by Instrument</h2>
+                            <div id="instrumentBreakdown" class="breakdown-chart"></div>
+                        </div>
+
+                        <div class="report-section">
+                            <h2>Practice Time by Category</h2>
+                            <div id="categoryBreakdown" class="breakdown-chart"></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Settings Section -->
+                <section id="settings" class="section">
+                    <div class="settings-container">
+                        <div class="settings-section">
+                            <h2>Time Zone</h2>
+                            <div class="form-group">
+                                <label for="timezone">Select Time Zone:</label>
+                                <select id="timezone" class="form-control">
+                                    <option value="">Loading timezones...</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="settings-section">
+                            <h2>Instruments</h2>
+                            <div class="list-container">
+                                <div class="instrument-list"></div>
+                            </div>
+                            <button id="addInstrumentBtn" class="btn primary">
+                                <i class="fas fa-plus"></i> Add Instrument
+                            </button>
+                        </div>
+
+                        <div class="settings-section">
+                            <h2>Categories</h2>
+                            <div class="list-container">
+                                <div class="category-list"></div>
+                            </div>
+                            <button id="addCategoryBtn" class="btn primary">
+                                <i class="fas fa-plus"></i> Add Category
+                            </button>
+                        </div>
+
+                        <div class="settings-section">
+                            <h2>Profile Settings</h2>
+                            <form id="profileForm">
+                                <button type="submit" class="btn primary">Save Settings</button>
+                            </form>
+                        </div>
+
+                        <div class="settings-section danger-zone">
+                            <h2>Danger Zone</h2>
+                            <div class="danger-zone-content">
+                                <p>Once you delete your account, there is no going back. Please be certain.</p>
+                                <button id="deleteAccountBtn" class="btn danger">Delete Account</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div id="addInstrumentModal" class="modal">
+        <div class="modal-content">
+            <h2>Add New Instrument</h2>
+            <form id="addInstrumentForm">
+                <div class="form-group">
+                    <label for="newInstrumentName">Instrument Name:</label>
+                    <input type="text" id="newInstrumentName" required>
+                </div>
+                <div class="form-group">
+                    <label for="newInstrumentDescription">Description (optional):</label>
+                    <textarea id="newInstrumentDescription" rows="2"></textarea>
+                </div>
+                <div class="modal-buttons">
+                    <button type="submit" class="btn primary">Add</button>
+                    <button type="button" class="btn secondary" id="cancelAddInstrument">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="addCategoryModal" class="modal">
+        <div class="modal-content">
+            <h2>Add New Category</h2>
+            <form id="addCategoryForm">
+                <div class="form-group">
+                    <label for="newCategoryName">Category Name:</label>
+                    <input type="text" id="newCategoryName" required>
+                </div>
+                <div class="form-group">
+                    <label for="newCategoryDescription">Description (optional):</label>
+                    <textarea id="newCategoryDescription" rows="2"></textarea>
+                </div>
+                <div class="modal-buttons">
+                    <button type="submit" class="btn primary">Add</button>
+                    <button type="button" class="btn secondary" id="cancelAddCategory">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Load scripts in correct order -->
+    <script src="js/config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/timer.js" defer></script>
+    <script src="js/history.js" defer></script>
+    <script src="js/reports.js" defer></script>
+    <script src="js/settings.js" defer></script>
+</body>
+</html> 
